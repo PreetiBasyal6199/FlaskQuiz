@@ -96,8 +96,8 @@ class ResponseSchema(Schema):
     def validate_question_id(self, value, **kwargs):
         category_id = request.view_args.get('category_id')
         category_obj = Category.query.get_or_404(category_id)
-        question_obj: Question = Question.query.get_or_404(value)
-        if question_obj not in category_obj.questions:
+        question_obj: Question = Question.query.filter_by(id=value).first()
+        if not question_obj or question_obj not in category_obj.questions:
             raise ValidationError('Invalid question ID')
 
 
@@ -122,6 +122,6 @@ class QuizSchema(Schema):
         quiz_question_ids = set(question.id for question in category_obj.questions)
         # Check if the set of quiz question IDs is a subset of the set of answer question IDs
         if quiz_question_ids != question_ids:
-            raise ValidationError('Quiz must include all questions.')
+            raise ValidationError({"answers": ['Quiz must include all questions.']})
 
         return data
