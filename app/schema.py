@@ -1,22 +1,49 @@
-from app import ma
+# from app import ma
 from marshmallow import Schema, fields, validates, ValidationError
-from app.models import Category, Question
+from app.models import Category, Question, User
 from flask import request
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
-class CategorySchema(ma.Schema):
+class UserCreateSchema(Schema):
+    email = fields.String()
+    password = fields.String()
+
+    @validates('email')
+    def validate_email(self, email):
+        if User.query.filter_by(email=email).first():
+            raise ValidationError('User with this email already exists.')
+
+
+class UserLoginSchema(Schema):
+    email = fields.String()
+    password = fields.String()
+
+    @validates('email')
+    def validate_email(self, email):
+        if not User.query.filter_by(email=email).first():
+            raise ValidationError('User with this email does not exists.')
+
+    def validate(self, data):
+        user = User.query.filter_by(email=data['email']).first()
+        if not check_password_hash(user.password, data['password']):
+            raise ValidationError({"password": ['Credentials does not match.']})
+        return data
+
+
+class CategorySchema(Schema):
     class Meta:
         model = Category
         fields = ("id", "name", "created_at")
 
 
-class CategoryUpdateSchema(ma.Schema):
+class CategoryUpdateSchema(Schema):
     class Meta:
         model = Category
         fields = ("name",)
 
 
-class QuestionCreateSchema(ma.Schema):
+class QuestionCreateSchema(Schema):
     question_text = fields.String(required=True)
     category_id = fields.Integer(required=True)
     answer = fields.String(required=True)
@@ -32,13 +59,13 @@ class QuestionCreateSchema(ma.Schema):
             raise ValidationError('Invalid category ID')
 
 
-class QuestionListSchema(ma.Schema):
+class QuestionListSchema(Schema):
     class Meta:
         model = Question
         fields = ("id", "question_text", "category_id", "answer", "score", "created_at")
 
 
-class QuestionUpdateSchema(ma.Schema):
+class QuestionUpdateSchema(Schema):
     question_text = fields.String()
     category_id = fields.Integer()
     answer = fields.String()
