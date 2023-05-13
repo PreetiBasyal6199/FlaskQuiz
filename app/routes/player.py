@@ -19,15 +19,6 @@ class QuestionListResource(Resource):
         return QuestionListSchema(many=True).dump(category.questions)
 
 
-class QuizResource(Resource):
-    @jwt_required()
-    def post(self, category_id):
-        quiz = Quiz(user_id=get_jwt_identity(), category_id=category_id, score=0)
-        db.session.add(quiz)
-        db.session.commit()
-        return {"quiz": quiz.id}
-
-
 class PlayQuizAPI(Resource):
     @jwt_required()
     def post(self, category_id):
@@ -35,13 +26,12 @@ class PlayQuizAPI(Resource):
         db.session.add(quiz)
         try:
             responses = QuizSchema().load(request.json)
+            QuizSchema().validate(responses)
         except ValidationError as err:
-            return {'message': err.messages}, 400
-        # score = 0
+            return err.messages, 400
         for response in responses['answers']:
             db.session.add(
                 UserAnswer(quiz_id=quiz.id, question_id=response['question_id'], user_answer=response['answer']))
-
             question_obj: Question = Question.query.get(response['question_id'])
             if response['answer'].lower() == question_obj.answer.lower():
                 quiz.score += question_obj.score

@@ -38,9 +38,16 @@ class CategorySchema(Schema):
 
 
 class CategoryUpdateSchema(Schema):
+    name = fields.String(required=True)
+
     class Meta:
         model = Category
         fields = ("name",)
+
+    @validates('name')
+    def validate_name(self, name):
+        if Category.query.filter_by(name=name).first():
+            raise ValidationError("Category with this name already exists.")
 
 
 class QuestionCreateSchema(Schema):
@@ -97,14 +104,24 @@ class ResponseSchema(Schema):
 class QuizSchema(Schema):
     answers = fields.Nested(ResponseSchema, many=True)
 
-    @validates('answers')
-    def validate_answers(self, answers, **kwargs):
+    def validate(self, data):
+        # First, validate the data inside the nested schema
+        for answer in data.get('answers', []):
+            answer_schema = ResponseSchema()
+            errors = answer_schema.validate(answer)
+            if errors:
+                raise ValidationError(errors)
+        # Then, add other validation rules to the parent schema
         category_id = request.view_args.get('category_id')
         category_obj = Category.query.get_or_404(category_id)
+        if not category_obj.questions:
+            raise ValidationError("No Questions under this category")
         # Get all the unique question IDs from the list of answers
-        question_ids = set(answer['question_id'] for answer in answers)
+        question_ids = set(answer['question_id'] for answer in data['answers'])
         # Get all the question IDs for the quiz
         quiz_question_ids = set(question.id for question in category_obj.questions)
         # Check if the set of quiz question IDs is a subset of the set of answer question IDs
         if quiz_question_ids != question_ids:
             raise ValidationError('Quiz must include all questions.')
+
+        return data
