@@ -40,6 +40,8 @@ class CategoryResource(Resource):
         db.session.commit()
         return {'message': "Category Deleted Successfully"}, 204
 
+
+class CategoryRetrieveResource(Resource):
     @jwt_required()
     def get(self, category_id):
         category_obj = Category.query.get_or_404(category_id)
@@ -60,6 +62,7 @@ class QuestionResource(Resource):
         ques = Question(**question_obj)
         db.session.add(ques)
         db.session.commit()
+        return QuestionListSchema().dump(ques)
 
     @jwt_required()
     def patch(self, question_id):
@@ -77,6 +80,8 @@ class QuestionResource(Resource):
         db.session.commit()
         return{"message": "Question Deleted successfully."}, 204
 
+
+class QuestionDetailResource(Resource):
     @jwt_required()
     def get(self, question_id):
         question_obj = Question.query.get_or_404(question_id)
