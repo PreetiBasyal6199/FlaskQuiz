@@ -29,7 +29,7 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question_text = db.Column(db.String(164), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
-    category = db.relationship("Category", backref=db.backref("category", lazy=True))
+    category = db.relationship("Category", backref=db.backref("questions", lazy=True))
     answer = db.Column(db.String(64), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -51,4 +51,27 @@ class Quiz(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    category = db.relationship('Category', backref=db.backref('category', lazy=True))
 
+    # questions = db.relationship('Question', secondary='quiz_questions')
+
+    def get_questions(self):
+        """
+        Returns a list of all questions for the quiz.
+        """
+        questions = []
+        for question in self.category.questions:
+            questions.append(question)
+        return questions
+
+
+class UserAnswer(db.Model):
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), primary_key=True)
+    user_answer = db.Column(db.String(50))
+    question = db.relationship('Question', backref=db.backref('quiz_questions', lazy=True))
+
+    '''
+        Adding Unique together between quiz_id and question_is as User can not answer the same question two times
+        '''
+    __table_args__ = (db.UniqueConstraint('quiz_id', 'question_id', name='uq_quiz_question'),)
