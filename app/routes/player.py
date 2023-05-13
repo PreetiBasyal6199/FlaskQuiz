@@ -22,6 +22,7 @@ class QuestionListResource(Resource):
 class PlayQuizAPI(Resource):
     @jwt_required()
     def post(self, category_id):
+        Category.query.get_or_404(category_id)
         quiz = Quiz(user_id=get_jwt_identity(), category_id=category_id, score=0)
         db.session.add(quiz)
         try:
