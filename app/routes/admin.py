@@ -9,7 +9,7 @@ from marshmallow import ValidationError
 
 class CategoryResource(Resource):
 
-    @jwt_required
+    @jwt_required()
     def get(self):
         cateogries = Category.query.all()
         categories_list = CategorySchema(many=True).dump(cateogries)
