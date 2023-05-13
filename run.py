@@ -1,7 +1,7 @@
 from app import app, db
 from flask_restful import Api
 from app.routes.quiz import CategoryResource, QuestionResource, CategoryRetrieveResource, QuestionDetailResource
-from app.routes.player import CategoryListResource, QuestionListResource, QuizResource, AnswerQuestionResource, PlayQuizAPI
+from app.routes.player import CategoryListResource, QuestionListResource, PlayQuizAPI
 api = Api(app)
 if __name__ == '__main__':
     from app.routes.user import simple_page
@@ -12,8 +12,7 @@ if __name__ == '__main__':
     api.add_resource(QuestionDetailResource, '/cms/question-detail/<question_id>/')
     api.add_resource(QuestionListResource, '/question/<category_id>/')
     api.add_resource(CategoryListResource, '/category/')
-    api.add_resource(QuizResource, '/start-quiz/<category_id>/')
-    api.add_resource(PlayQuizAPI, '/play/<quiz_id>/')
+    api.add_resource(PlayQuizAPI, '/play-quiz/<category_id>/')
     with app.app_context():
         db.create_all()
     app.run(debug=True)
