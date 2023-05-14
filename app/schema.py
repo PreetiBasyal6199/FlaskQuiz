@@ -1,13 +1,13 @@
 # from app import ma
 from marshmallow import Schema, fields, validates, ValidationError
 from app.models import Category, Question, User
-from flask import request
+from flask import request, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class UserCreateSchema(Schema):
-    email = fields.String()
-    password = fields.String()
+    email = fields.String(required=True)
+    password = fields.String(required=True)
 
     @validates('email')
     def validate_email(self, email):
@@ -16,8 +16,8 @@ class UserCreateSchema(Schema):
 
 
 class UserLoginSchema(Schema):
-    email = fields.String()
-    password = fields.String()
+    email = fields.String(required=True)
+    password = fields.String(required=True)
 
     @validates('email')
     def validate_email(self, email):
@@ -31,13 +31,13 @@ class UserLoginSchema(Schema):
         return data
 
 
-class CategorySchema(Schema):
+class CategoryListSchema(Schema):
     class Meta:
         model = Category
         fields = ("id", "name", "created_at")
 
 
-class CategoryUpdateSchema(Schema):
+class CategoryCreateUpdateSchema(Schema):
     name = fields.String(required=True)
 
     class Meta:
@@ -72,6 +72,12 @@ class QuestionListSchema(Schema):
         fields = ("id", "question_text", "category_id", "answer", "score", "created_at")
 
 
+class ClientQuestionListSchema(Schema):
+    class Meta:
+        model = Question
+        fields = ("id", "question_text", "score")
+
+
 class QuestionUpdateSchema(Schema):
     question_text = fields.String()
     category_id = fields.Integer()
@@ -95,7 +101,9 @@ class ResponseSchema(Schema):
     @validates('question_id')
     def validate_question_id(self, value, **kwargs):
         category_id = request.view_args.get('category_id')
-        category_obj = Category.query.get_or_404(category_id)
+        category_obj = Category.query.get(category_id)
+        if not category_obj:
+            abort(404, "Invalid Category ID")
         question_obj: Question = Question.query.filter_by(id=value).first()
         if not question_obj or question_obj not in category_obj.questions:
             raise ValidationError('Invalid question ID')
@@ -113,15 +121,16 @@ class QuizSchema(Schema):
                 raise ValidationError(errors)
         # Then, add other validation rules to the parent schema
         category_id = request.view_args.get('category_id')
-        category_obj = Category.query.get_or_404(category_id)
-        if not category_obj.questions:
+        category: Category = Category.query.get(category_id)
+        if not category:
+            abort(404, "Invalid Category ID")
+        if not category.questions:
             raise ValidationError("No Questions under this category")
         # Get all the unique question IDs from the list of answers
         question_ids = set(answer['question_id'] for answer in data['answers'])
         # Get all the question IDs for the quiz
-        quiz_question_ids = set(question.id for question in category_obj.questions)
+        quiz_question_ids = set(question.id for question in category.questions)
         # Check if the set of quiz question IDs is a subset of the set of answer question IDs
         if quiz_question_ids != question_ids:
             raise ValidationError({"answers": ['Quiz must include all questions.']})
-
         return data
