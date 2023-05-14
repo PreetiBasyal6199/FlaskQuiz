@@ -25,10 +25,10 @@ def signup():
 @simple_page.route("/login/", methods=['POST'])
 def login():
     try:
-        user = UserLoginSchema().load(request.json)
+        user = UserLoginSchema().load(request.json)  # load the request data into schema for validation
         validated_data = UserLoginSchema().validate(user)
-        user_obj = User.query.filter_by(email=validated_data.get('email')).first()
-        access_token = create_access_token(identity=user_obj.id)
+        user_obj = User.query.filter_by(email=validated_data.get('email')).first()  # get the user object from email
+        access_token = create_access_token(identity=user_obj.id)    # generates access token for JWT authentication
         return jsonify({"access_token": access_token}), 200
     except ValidationError as err:
         return err.messages, 400

@@ -1,29 +1,27 @@
 from app import db
-from flask import request, jsonify
+from flask import request, jsonify, abort
 from app.models import Quiz, UserAnswer, Category, Question
-from app.schema import CategorySchema, QuestionListSchema, QuizSchema
+from app.schema import ClientQuestionListSchema, QuizSchema
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from marshmallow import ValidationError
 
 
-class CategoryListResource(Resource):
-    def get(self):
-        categories = Category.query.all()
-        return CategorySchema(many=True).dump(categories)
-
-
 class QuestionListResource(Resource):
     def get(self, category_id):
-        category: Category = Category.query.get_or_404(category_id)
-        return QuestionListSchema(many=True).dump(category.questions)
+        category: Category = Category.query.get(category_id)
+        if not category:
+            abort(404, "Invalid Category ID")
+        return ClientQuestionListSchema(many=True).dump(category.questions)
 
 
 class PlayQuizAPI(Resource):
     @jwt_required()
     def post(self, category_id):
-        Category.query.get_or_404(category_id)
-        quiz = Quiz(user_id=get_jwt_identity(), category_id=category_id, score=0)
+        category: Category = Category.query.get(category_id)  # Get the specific category object chosen by the user
+        if not category:
+            abort(404, "Invalid Category ID")
+        quiz = Quiz(user_id=get_jwt_identity(), category_id=category_id, score=0)  # Create an quiz instance
         db.session.add(quiz)
         try:
             responses = QuizSchema().load(request.json)
