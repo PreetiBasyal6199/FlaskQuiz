@@ -19,19 +19,18 @@ The API endpoints are secured using JWT tokens for authentication and authorizat
 ### The following API endpoints are available:
 
 #### User endpoints:
-- **GET /category/**: Get a list of all categories.
-- **GET /question/<int:category_id>/** : Get a list of questions for a specific category.
+- **GET /categories/**: Get a list of all categories.
+- **GET /questions/<int:category_id>/** : Get a list of questions for a specific category.
 - **POST /play-quiz/<int:category_id>/** : Start a new quiz for a specific category.
 - **POST /signup/** : Create a new user
 - **POST /login/** : Lets a user to login
 
 #### Admin endpoints:
-- **GET /admin/category/**: Get a list of all categories.
 - **GET /admin/category-detail/<int:category_id>/** : Get details of a specific category.
 - **POST /admin/category/**: Create a new category.
 - **PATCH /admin/category/<int:category_id>/** : Update an existing category.
 - **DELETE /admin/category/<int:category_id>/** : Delete a category.
-- **GET /admin/question/** : Get a list of questions.
+- **GET /admin/questions/** : Get a list of questions.
 - **GET /question-detail/<int:question_id>/** : Get details of a specific question.
 - **POST /admin/question/** : Create a new question.
 - **PATCH /admin/question/<int:question_id>/**: Update an existing question.
