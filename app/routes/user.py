@@ -16,7 +16,8 @@ def signup():
     except ValidationError as err:
         return err.messages, 400
     user_obj = User(email=user_schema['email'],
-                    password=generate_password_hash(user_schema['password'], method='SHA256'))
+                    password=generate_password_hash(user_schema['password'], method='SHA256'),
+                    is_admin=user_schema.get("is_admin"))
     db.session.add(user_obj)
     db.session.commit()
     return {"message": "Signup successfully"}
