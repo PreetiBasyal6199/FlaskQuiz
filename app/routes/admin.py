@@ -6,6 +6,7 @@ from app.models import Category, Question
 from app.schema import CategoryListSchema, CategoryCreateUpdateSchema, QuestionCreateSchema, QuestionListSchema, \
     QuestionUpdateSchema
 from marshmallow import ValidationError
+from app.decorator import is_admin
 
 
 class CategoryResource(Resource):
@@ -19,6 +20,7 @@ class CategoryResource(Resource):
         categories_list = CategoryListSchema(many=True).dump(cateogries)
         return {"categories": categories_list}
 
+    @is_admin
     @jwt_required()
     def post(self):
         """
@@ -39,6 +41,7 @@ class CategoryResource(Resource):
             return err.messages, 400
         return CategoryListSchema().dump(category_obj)
 
+    @is_admin
     @jwt_required()
     def patch(self, category_id):
         """
@@ -65,6 +68,7 @@ class CategoryResource(Resource):
             return err.messages, 400
         return CategoryListSchema().dump(category)
 
+    @is_admin
     @jwt_required()
     def delete(self, category_id):
         """
@@ -91,6 +95,7 @@ class CategoryResource(Resource):
 
 
 class CategoryRetrieveResource(Resource):
+    @is_admin
     @jwt_required()
     def get(self, category_id):
         category_obj = Category.query.get(category_id)
@@ -100,13 +105,15 @@ class CategoryRetrieveResource(Resource):
 
 
 class QuestionResource(Resource):
+    @is_admin
     def get(self):
         """
-        Get list of all categories
+        Get list of all questions
         """
         questions = Question.query.all()
         return QuestionListSchema(many=True).dump(questions)
 
+    @is_admin
     @jwt_required()
     def post(self):
         """
@@ -145,6 +152,7 @@ class QuestionResource(Resource):
         db.session.commit()
         return QuestionListSchema().dump(ques)
 
+    @is_admin
     @jwt_required()
     def patch(self, question_id):
         """
@@ -161,6 +169,7 @@ class QuestionResource(Resource):
         db.session.commit()
         return QuestionListSchema().dump(question_obj)
 
+    @is_admin
     @jwt_required()
     def delete(self, question_id):
         """
@@ -174,6 +183,7 @@ class QuestionResource(Resource):
 
 
 class QuestionDetailResource(Resource):
+    @is_admin
     @jwt_required()
     def get(self, question_id):
         """
