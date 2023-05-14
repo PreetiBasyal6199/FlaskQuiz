@@ -8,6 +8,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password = db.Column(db.String(128))
+    is_admin = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return {self.email}
@@ -61,6 +62,7 @@ class Quiz(db.Model):
     score = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     category = db.relationship('Category', backref=db.backref('category', lazy=True, cascade="all,delete"))
+    user = db.relationship('User', backref=db.backref('user', lazy=True, cascade="all,delete"))
 
     # questions = db.relationship('Question', secondary='quiz_questions')
 
@@ -79,9 +81,9 @@ class UserAnswer(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'), primary_key=True)
     user_answer = db.Column(db.String(50))
     question = db.relationship('Question',
-                               backref=db.backref('quiz_questions', lazy=True, cascade="all,delete"))
+                               backref=db.backref('question', lazy=True, cascade="all,delete"))
     quiz = db.relationship('Quiz',
-                               backref=db.backref('user_answer', lazy=True, cascade="all,delete"))
+                               backref=db.backref('quiz', lazy=True, cascade="all,delete"))
 
     '''
         Adding Unique together between quiz_id and question_is as User can not answer the same question two times
