@@ -1,5 +1,4 @@
 from flask import abort
-from flask_login import current_user
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.models import User
 
