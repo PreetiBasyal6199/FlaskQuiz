@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class UserCreateSchema(Schema):
     email = fields.String(required=True)
     password = fields.String(required=True)
+    is_admin = fields.Boolean()
 
     @validates('email')
     def validate_email(self, email):
