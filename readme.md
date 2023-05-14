@@ -8,6 +8,7 @@ This is a Flask-based RESTful API that allows users to take quizzes and view the
 -Submit answers to a quiz and get a final score.
 
 ### Admin actions:
+_**Note:( User with is_admin True is required)**_
 - Add, edit, and delete categories.
 - Add, edit, and delete questions within each category.
 
@@ -81,7 +82,8 @@ Content-Type: application/json
 
 {
     "email": "jemail1@gmail.com",
-    "password": "secret"
+    "password": "secret",
+    "is_admin": "true"  # For admin user
 }
 ```
 2. Authenticate by sending a POST request to /login/ with a JSON payload containing your email and password. You will receive a JWT token in response.
@@ -101,7 +103,9 @@ GET /categories/ HTTP/1.1
 
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6Im9yYW5nZSIsImV4cCI6MTYyMzU5ODIwNywiaWF0IjoxNjIzNTkxNjA3fQ.HrEWGxRzT4We6ulIzoROZhbEKc1aHejU-yN2A6iSRVw
 ```
-4. Create new category
+4. Create new category 
+
+   **Note**:  _User must be admin user_
 ```commandline
 POST /admin/category/ HTTP/1.1
 
@@ -115,6 +119,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c
 ```
 
 5. Update an existing category.
+
+    **Note**:  _User must be admin user_
 ```commandline
 PATCH /admin/category/1/ HTTP/1.1
 
@@ -128,6 +134,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c
 
 ```
 6. Delete a category
+ 
+**Note**:  _User must be admin user_
 ```commandline
 DELETE /admin/category/1/ HTTP/1.1
 
@@ -136,12 +144,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c
 ```
 7. Retrieve a category
 
+**Note**:  _User must be admin user_
 ```
 GET /category-detail/1/ HTTP/1.1
 
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6Im9yYW5nZSIsImV4cCI6MTYyMzU5ODIwNywiaWF0IjoxNjIzNTkxNjA3fQ.HrEWGxRzT4We6ulIzoROZhbEKc1aHejU-yN2A6iSRVw
 ```
 8. Create new question for a specific category
+
+**Note**:  _User must be admin user_
 ```commandline
 POST /admin/question/ HTTP/1.1
 
@@ -159,6 +170,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c
 ```
 
 9. List all the question
+
+**Note**:  _User must be admin user_
 ```commandline
 GET /admin/questions/ HTTP/1.1
 
@@ -166,6 +179,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c
 ```
 
 10. Update a question
+
+**Note**:  _User must be admin user_
 
 ```commandline
 PATCH /admin/question/1/ HTTP/1.1
@@ -180,6 +195,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c
 }
 ```
 11. Delete a question
+
+**Note**:  _User must be admin user_
 ```commandline
 DELETE /admin/question/1/ HTTP/1.1
 
@@ -188,6 +205,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c
 ```
 
 12. Retrieve a question detail
+
+**Note**:  _User must be admin user_
 ```commandline
 GET /admin/question-detail/1/ HTTP/1.1
 
