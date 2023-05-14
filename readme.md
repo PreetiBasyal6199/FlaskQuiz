@@ -134,7 +134,14 @@ DELETE /admin/category/1/ HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjIzNTk4OTY4LCJpYXQiOjE2MjM1OTIzNjh9.RSBqKQkl6Y_T6_Nvo56kNWcK_xO7Hzoea-mGc26cB7c
 
 ```
-7. Create new question for a specific category
+7. Retrieve a category
+
+```
+GET /category-detail/1/ HTTP/1.1
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6Im9yYW5nZSIsImV4cCI6MTYyMzU5ODIwNywiaWF0IjoxNjIzNTkxNjA3fQ.HrEWGxRzT4We6ulIzoROZhbEKc1aHejU-yN2A6iSRVw
+```
+8. Create new question for a specific category
 ```commandline
 POST /admin/question/ HTTP/1.1
 
@@ -151,14 +158,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c
 
 ```
 
-8. List all the question
+9. List all the question
 ```commandline
 GET /admin/questions/ HTTP/1.1
 
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6Im9yYW5nZSIsImV4cCI6MTYyMzU5ODIwNywiaWF0IjoxNjIzNTkxNjA3fQ.HrEWGxRzT4We6ulIzoROZhbEKc1aHejU-yN2A6iSRVw
 ```
 
-9. Update a question
+10. Update a question
 
 ```commandline
 PATCH /admin/question/1/ HTTP/1.1
@@ -172,7 +179,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c
     "score": 10
 }
 ```
-10. Delete a question
+11. Delete a question
 ```commandline
 DELETE /admin/question/1/ HTTP/1.1
 
@@ -180,14 +187,22 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c
 
 ```
 
-11. Get a list of all questions for a specific category.
+12. Retrieve a question detail
+```commandline
+GET /admin/question-detail/1/ HTTP/1.1
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjIzNTk4OTY4LCJpYXQiOjE2MjM1OTIzNjh9.RSBqKQkl6Y_T6_Nvo56kNWcK_xO7Hzoea-mGc26cB7c
+
+```
+
+13. Get a list of all questions for a specific category.
 ```commandline
 GET /questions/1/ HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjIzNTk4OTY4LCJpYXQiOjE2MjM1OTIzNjh9.RSBqKQkl6Y_T6_Nvo56kNWcK_xO7Hzoea-mGc26cB7c
 
 ```
 
-12. Play Quiz by choosing specific category
+14. Play Quiz by choosing specific category
 ```commandline
 POST /play-quiz/1/ HTTP/1.1
 
